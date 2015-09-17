@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section styles{
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+}
+@section scripts {
+<script src="~/Scripts/angular.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+
+<script>
+
+    angular.module('directionModule', [])
+    .controller('directionControl', function ($scope) {
+
+        var map;
+        var mapOptions;
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            draggable: true
+        });
+        var directionsService = new google.maps.DirectionsService();
+
+        $scope.initialize = function () {
+            var pos = new google.maps.LatLng(0, 0);
+            var mapOptions = {
+                zoom: 3,
+                center: pos
+            };
+
+            map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+        };
+        $scope.calcRoute = function () {
+            var end = document.getElementById('endlocation').value;
+            var start = document.getElementById('startlocation').value;
+
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+
+            directionsService.route(request, function (response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setMap(map);
+                    directionsDisplay.setDirections(response);
+                    console.log(status);
+                }
+
+            });
+        };
+
+        google.maps.event.addDomListener(window, 'load', $scope.initialize);
+
+    });
+
+    angular.module('weatherModule', ['directionModule'])
+     .controller('weatherControl', function ($scope, $http) {
+
+         $scope.getWeather = function () {
+
+             var endW;
+             var startW;
+             var startSTATE;
+             var endSTATE;
+
+             endW = document.getElementById('endlocation').value;
+             startW = document.getElementById('startlocation').value;
+             endSTATE = document.getElementById('endSTATE').value;
+             startSTATE = document.getElementById('startSTATE').value;
+
+             $scope.endW = document.getElementById('endlocation').value;
+             $scope.startW = document.getElementById('startlocation').value;
+
+             var url = "http://api.wunderground.com/api/36b799dc821d5836/conditions/q/";
+             var urlStart = url.concat(startSTATE + "/" + startW + ".json");
+             var urlEnd = url.concat(endSTATE + "/" + endW + ".json");
+
+             console.log(urlStart);
+
+             $http.get(urlStart).success(function (data) {
+                 console.log(data);
+                 temp = data.current_observation.temp_f;
+                 icon = data.current_observation.icon_url;
+                 weather1 = data.current_observation.weather;
+                 console.log(temp);
+                 $scope.conds1 = { html: "Currently " + temp + " &deg; F and " + weather1 + "" }
+                 $scope.currentIcon1 = { html: "<img src='" + icon + "'/>" }
+
+             })
+
+             $http.get(urlEnd).success(function (data) {
+                 console.log(data);
+                 temp = data.current_observation.temp_f;
+                 icon = data.current_observation.icon_url;
+                 weather1 = data.current_observation.weather;
+                 console.log(temp);
+                 $scope.conds2 = { html: "Currently " + temp + " &deg; F and " + weather1 + "" }
+                 $scope.currentIcon2 = { html: "<img src='" + icon + "'/>" }
+
+             })
+         }
+
+     });
+
+    angular.module("CombineModule", ["directionModule", "weatherModule"]);
+
+</script>
+}
+<div ng-app="CombineModule">
+    <div class="row">
+        <div class="col-md-6">
+            <div ng-controller=" directionControl">
+                <br /><br /><br />
+                <div class="row">
+                    (<input type="text" ng-model="startlocation" id="startlocation" placeholder="First City (e.g. Kansas City)" />, 
+                    <input type="text" ng-model="startSTATE" id="startSTATE" placeholder="State (e.g. MO)" size="10" />)
+                    <button id="btn" ng-click="calcRoute()">
+                        Show Directions
+                    </button>
+                </div>
+                <div class="row">
+                    (<input type="text" ng-model="endlocation" id="endlocation" placeholder="Second City"  />,
+                    <input type="text" ng-model="endSTATE" id="endSTATE" placeholder="State" size="10" />)
+                </div>
+                    
+                    <br />
+                    <div id="map-canvas" style="height: 400px;"></div>
+                </div>
+        </div>
+        <div class="col-md-6">
+            <br /><br /><br />
+            <div ng-controller="weatherControl">
+                <button id="btn" ng-click="getWeather()">
+                    Show Weather
+                </button>
+                <br /><br /><br />
+                First City: {{startW}}
+                <div class="weatherDash">
+                    <p class="currentConditions" ng-bind-html-unsafe="conds1.html"></p>
+                    <div class="currentIcon" ng-bind-html-unsafe="currentIcon1.html"></div>
+                </div>
+                <br /><br /><br />
+                Second City: {{endW}}
+                <div class="weatherDash">
+                    <p class="currentConditions" ng-bind-html-unsafe="conds2.html"></p>
+                    <div class="currentIcon" ng-bind-html-unsafe="currentIcon2.html"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
