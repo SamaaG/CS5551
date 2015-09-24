@@ -61,13 +61,13 @@
 
          $scope.getWeather = function () {
 
-             var endW;
-             var startW;
+            @* var endW;
+             var startW;*@
              var startSTATE;
              var endSTATE;
 
-             endW = document.getElementById('endlocation').value;
-             startW = document.getElementById('startlocation').value;
+            @* endW = document.getElementById('endlocation').value;
+             startW = document.getElementById('startlocation').value;*@
              endSTATE = document.getElementById('endSTATE').value;
              startSTATE = document.getElementById('startSTATE').value;
 
@@ -75,8 +75,8 @@
              $scope.startW = document.getElementById('startlocation').value;
 
              var url = "http://api.wunderground.com/api/36b799dc821d5836/conditions/q/";
-             var urlStart = url.concat(startSTATE + "/" + startW + ".json");
-             var urlEnd = url.concat(endSTATE + "/" + endW + ".json");
+             var urlStart = url.concat(startSTATE + "/" + $scope.startW + ".json");
+             var urlEnd = url.concat(endSTATE + "/" + $scope.endW + ".json");
 
              console.log(urlStart);
 

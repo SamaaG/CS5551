@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "Mashup Page";
+}
+@section scripts {
+    <script src="~/Scripts/angular.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.1/angular.min.js" type="application/javascript"></script>
+<script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script>
+
+<script>
+    function tts() {
+        var btn = document.getElementById('ttsBtn');
+        btn.disabled = true;
+        document.addEventListener("DOMContentLoaded", function (e) {
+            btn.disabled = false;
+
+            function canPlayAudioMP3(callback) {
+                try {
+                    var audio = new Audio();
+                    //Shortcut which doesn't work in Chrome (always returns ""); pass through
+                    // if "maybe" to do asynchronous check by loading MP3 data: URI
+                    if (audio.canPlayType('audio/mpeg') == "probably")
+                        callback(true);
+
+                    //If this event fires, then MP3s can be played
+                    audio.addEventListener('canplaythrough', function (e) {
+                        callback(true);
+                    }, false);
+
+                    //If this is fired, then client can't play MP3s
+                    audio.addEventListener('error', function (e) {
+                        callback(false, this.error)
+                    }, false);
+
+                    //Smallest base64-encoded MP3 I could come up with (less than 0.000001 seconds long)
+                    audio.src = "data:audio/mpeg;base64,/+MYxAAAAANIAAAAAExBTUUzLjk4LjIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+                    audio.load();
+                }
+                catch (e) {
+                    callback(false, e);
+                }
+            }
+
+            canPlayAudioMP3(function (success) {
+                document.getElementById('google-tts-form').addEventListener("submit", function (e) {
+                    //Stop if they didn't provide anything
+                    var textInputText = document.getElementById('textInputText');
+                    if (!textInputText.value.replace(/\s+/)) {
+                        textInputText.focus();
+                        e.preventDefault();
+                        return false;
+                    }
+                    var textInputLang = document.getElementById('textInputLang');
+
+                    //When the form is submitted, generate the URL for Google TTS
+                    var params = [];
+                    for (var i = 0, len = this.elements.length; i < len; i++) {
+                        if (this.elements[i].name)
+                            params.push(this.elements[i].name + "=" + encodeURIComponent(this.elements[i].value));
+                    }
+                    var url = this.action + "?" + params.join("&amp;");
+
+                    //Update the hash with the new query so it can be bookmarked
+                    location.hash = "#hl=" + encodeURIComponent(textInputLang.value).replace(/%20/g, '+')
+                                  + "&amp;text=" + encodeURIComponent(textInputText.value).replace(/%20/g, '+');
+
+                    var link = document.getElementById('speechOutputLink');
+                    link.href = url;
+                    var speechOutput = document.getElementById('speechOutput');
+                    var audio = document.getElementById('speechOutputAudio');
+
+                    if (success) {
+                        btn.disabled = false;
+                        audio.src = url;
+                        audio.load(); //this is necessary because can't set audio.currentTime in Chrome (below)
+                        //audio.addEventListener("ended", function(e){
+                        //	this.currentTime = 0;
+                        //}, false);
+                        audio.play();
+                    }
+                    else if (audio) {
+                        var warning = document.createElement('em');
+                        warning.className = "error";
+                        warning.innerHTML = "Either your browser does not support HTML5 Audio or your browser doesn't support playing MP3s, so you must use the download link:";
+                        audio.parentNode.replaceChild(warning, audio);
+                    }
+                    speechOutput.removeAttribute('hidden');
+
+                    if (!success)
+                        link.focus();
+                    e.preventDefault();
+                }, false);
+
+                //Focus on the input box
+                var textInputText = document.getElementById('textInputText');
+                if (location.hash.substr(1) == 'google-tts-form')
+                    textInputText.focus();
+                var textInputLang = document.getElementById('textInputLang');
+
+            });
+        })
+    }</script>
+}
+<div class="row" style="margin-top:40px">
+    <div class="col-md-6 col-md-offset-3">
+
+        <form id="google-tts-form" action="http://translate.google.com/translate_tts" method="get" target="_blank">
+
+            <fieldset>
+                <legend>Welcome to the mashup page!</legend>
+                Using this app, you will be able to hear your tweet before actually tweeting it! Enjoy!<br /><br/>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>
+                                <label for="textInputLang">Language: </label>
+                            </th>
+                            <td>
+                                <select name="tl" id="textInputLang">
+                                    <option value="en">English (en)</option>
+                                    <option value="es">Spanish (es)</option>
+                                    <option value="fr">French (fr)</option>
+                                    <option value="de">German (de)</option>
+                                    <option value="it">Italian (it)</option>
+                                    <option value="ht">Hatian Creole (ht)</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr id="textInput">
+                            <th>
+                                <label for="textInputText">Text: </label>
+                            </th>
+                            <td>
+                                <textarea type="text" maxlength="100" name="q" id="textInputText" value="Tweet This!">
+                                    </textarea>
+</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td>
+                                <br />
+                                <button type="submit" onclick="tt()">Text-To-Speech</button>
+                                <script>
+                                    function NavigateToSite() {
+
+                                        var tweetTEXT = document.getElementById("textInputText").value;
+                                        var tweetURL = 'https://twitter.com/intent/tweet?text=';
+                                        tweetURL = tweetURL.concat(tweetTEXT);
+                                        window.location = tweetURL;
+                                    }</script>
+                                <input type=button onclick="NavigateToSite()" value='tweet #GoogleTTS' />
+
+                            </td>
+                        </tr>
+                        <tr id="speechOutput" hidden="">
+                            <th>
+                                <label>Speech:</label>
+                            </th>
+                            <td>
+                                <audio id="speechOutputAudio" src="" controls=""></audio>
+                                <p id="speechOutputDownload">
+                                    <a id="speechOutputLink" href="" rel="noreferrer" target="_blank">Download audio</a>
+                                    <small>(copy URL if browser doesn't support <code>rel="noreferrer"</code>; otherwise <code>404 Not Found</code>)</small>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+    </div>
+</div>
