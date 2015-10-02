@@ -1,0 +1,30 @@
+<div class="modal">
+
+    <ion-header-bar class="bar-secondary">
+        <h1 class="title">New Location</h1>
+        <button class="button button-clear button-positive" ng-click="closeNewLoc()"></button>
+    </ion-header-bar>
+
+    <ion-content>
+        <form ng-submit="createLoc(loc)">
+            <div class="list">
+                <label class="item item-input">
+                    <input type="text" placeholder="What is the name of this location?" ng-model="loc.title"/>
+                </label>
+                <label class="item item-input">
+                    <input type="text" placeholder="What is the address?" ng-model="loc.address"/>
+                </label>
+                <label class="item item-input">
+                    <input type="text" placeholder="image url here." ng-model="loc.img"/>
+                    <!--new image example url
+                        https://m2.behance.net/rendition/pm/23240799/disp/1888fb629fe4a34aa2300d785409d0b4.png-->
+                </label>
+            </div>
+            <div class="padding">
+                <button type="submit" class="button button-block button-royal">
+                    Create a new location
+                </button>
+            </div>
+        </form>
+    </ion-content>
+</div>
