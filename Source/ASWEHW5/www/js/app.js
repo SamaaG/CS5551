@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic'])
+angular.module('starter', ['ionic','ngCordova'])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -8,7 +8,8 @@ angular.module('starter', ['ionic'])
     }
     if(window.StatusBar) {
       StatusBar.styleDefault();} });    })
-.controller('LocCtrl', function($scope, $ionicModal){
+.controller('LocCtrl', function($scope, $ionicModal, $cordovaToast){
+  
     $scope.locs= [
         {title: 'Home',
          address: '628 Scott ave, Kansas City, MO',
@@ -22,11 +23,22 @@ angular.module('starter', ['ionic'])
          address: '78 E Santa Fe, Kansas City, MO',
          img: 'img/anna.png'
         } ];
+    
 $ionicModal.fromTemplateUrl('views/newLoc.html', function (modal){
  $scope.locModal = modal;
 },{
    scope: $scope
 });
+    
+
+$scope.showToast = function(message, duration, location) {
+        $cordovaToast.show(message, duration, location).then(function(success) {
+            console.log("The toast was shown");
+        }, function (error) {
+            console.log("The toast was not shown due to " + error);
+        });
+    }
+
 
 $scope.createLoc = function (loc) {
     $scope.locs.push({
@@ -34,7 +46,8 @@ $scope.createLoc = function (loc) {
         address: loc.address,
         img: loc.img
     });
-//$scope.locModal.hide();
+    $scope.locModal.hide();
+    
     loc.title="";
     loc.address="";
     loc.img="";
