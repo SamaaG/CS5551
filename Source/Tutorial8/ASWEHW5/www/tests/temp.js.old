@@ -1,0 +1,44 @@
+describe('given a LocCtrl', function() {
+        var scope;
+        var $controller;
+		
+        describe('createLoc', function() {
+            beforeEach(function() {
+
+                module('starter');
+                inject(function($rootScope, _$controller_) {
+                    scope = $rootScope.$new();
+                    $controller = _$controller_;
+                    $controller('LocCtrl', {
+                        '$scope': scope
+                    });
+                });
+
+            });
+
+                it("Checks the location creation", function() {
+                    var size = scope.locs.length;
+                    scope.createLoc({title: 'Hello'});
+                    expect(scope.locs.length).toEqual(size + 1);
+                });
+            
+                it("Checks whether the name of the location is correct", function() {
+                    scope.createLoc({
+                        title: 'Home',
+                        address: '123 w',
+                        img: 'my.bng'
+                    });
+                    expect(scope.loc.title).toEqual('Home');
+                });
+            
+                it("Checks whether the address of the location is correct", function() {
+                    scope.createLoc({
+                        title: 'hello',
+                        address: '123 W',
+                        img: 'my.bng'
+                    });
+                    expect(scope.loc.title).toEqual('123 W');
+                });
+            
+        });
+    });

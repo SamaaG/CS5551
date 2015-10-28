@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"  ng-app="starter">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>My Location App</title>
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">-->
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+      
+    <script src="https://cdn.rawgit.com/driftyco/ng-cordova/master/dist/ng-cordova.min.js"></script>
+
+   
+ <!--your app's js -->
+    <script src="js/app.js"></script>
+  </head>
+  <body ng-controller="AppCtrl">
+    <ion-pane>
+      <ion-header-bar class="bar-royal">
+        <h1 class="title">My Saved Locations</h1>
+        <button class="button button-icon" ng-click="newLoc()">
+            <i class="icon ion-compose"></i>
+          </button>
+      </ion-header-bar>
+      <ion-content overflow-scroll="true">
+			<button class="button" ng-click="openLogin()">
+			Login
+            <i class="icon ion-person"></i>
+			<button class="button" ng-click="openRegister()">
+			Register
+            <i class="icon ion-person-add"></i>
+          </button>
+                {{name}}
+          <ion-list>
+              <ion-item ng-repeat="loc in locs">
+                  <div class="item item-avatar" href='#'>
+                      <img src="{{loc.img}}"/>
+                      <b>{{loc.title}}</b><br/>
+                      address: {{loc.address}}
+                  </div>
+              </ion-item>
+          </ion-list>
+      </ion-content>
+    </ion-pane>
+  </body>
+</html>

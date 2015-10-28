@@ -1,0 +1,29 @@
+<div class="modal">
+
+    <ion-header-bar class="bar-secondary">
+        <h1 class="title">Register View</h1>
+        <button class="button button-icon" ng-click="closeRegister()">
+            <i class="icon ion-close"></i>
+        </button>
+    </ion-header-bar>
+
+    <ion-content>
+        <form id="registerForm" ng-submit="register(userName, password, email)">
+                <label class="item item-input">
+                    <input type="text" placeholder="User Name" data-ng-model="userName"/>
+               </label>
+                    
+                <label class="item item-input">
+                    <input type="password" placeholder="Password" data-ng-model="password"/>
+                </label>
+                 
+                <label class="item item-input">
+                    <input type="text" placeholder="Email Address" data-ng-model="email"/>
+                </label>
+            <br/>
+            <div class="padding">
+           <button class="button button-block button-royal" id="register" ng_click="showToast('User Created', 'short', 'center')">Register</button>  
+            </div>
+        </form>
+    </ion-content>
+</div>

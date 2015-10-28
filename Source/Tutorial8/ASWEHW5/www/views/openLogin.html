@@ -1,0 +1,29 @@
+<div class="modal">
+
+    <ion-header-bar class="bar-secondary">
+        <h1 class="title">Login View</h1>
+        <button class="button button-icon" ng-click="closeLogin()">
+            <i class="icon ion-close"></i>
+        </button>
+    </ion-header-bar>
+
+    <ion-content>
+        <p style="color:red">
+        {{loginErr}}
+        </p>
+        <form id="loginForm" ng-submit="login(userName, password)">
+                <label class="item item-input">
+                    <input type="text" placeholder="User Name" data-ng-model="userName"/>
+               </label>
+                    
+                <label class="item item-input">
+                    <input type="password" placeholder="Password" data-ng-model="password"/>
+                </label>
+                
+            <br/>
+            <div class="padding">
+           <button class="button button-block button-royal" id="login">Login</button>  
+            </div>
+        </form>
+    </ion-content>
+</div>
