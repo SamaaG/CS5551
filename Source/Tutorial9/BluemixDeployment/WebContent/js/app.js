@@ -8,7 +8,7 @@ angular.module('starter', ['ionic','ngCordova'])
       StatusBar.styleDefault();} });    })
 .controller('AppCtrl', function($scope, $ionicModal, $cordovaToast, $http, $httpParamSerializerJQLike){
   
-    
+/*    
     //The constructor pattern
     var Title = getElementById("title");
     var Address = getElementById("address");
@@ -48,7 +48,7 @@ console.log( yourCar.name );
   //MVC pattern
     //having the models the views and the controllers
     //in different files is by itself a pattern
-    
+    */
  var loggedIn = false;
     if (loggedIn){
    function showLocs(){     
